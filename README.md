@@ -1,93 +1,258 @@
-# Who is that monster - Backend
+# 🎃 ¿Quién es ese Monstruo? – Backend API
 
-## 🧩 Branches structure
-- **Main branches:**
-    - `main` → Stable code (production)
-    - `develop` → New functionality integration (development)
-- **Temporary branches (each member):**
-    - `feature/` → New functionalities
-    - `fix/` → Error fixing
-    - `hotfix/` → Urgent fixing on `main`
+Juego web tipo *"¿Quién es ese Pokémon?"* adaptado a Halloween.  
+El backend provee los endpoints para obtener trivias aleatorias, validar respuestas y cargar datos iniciales de monstruos.
 
-## 🔄 Workflow (Git Flow Simplified)
-1. Clone the repository:
-   ```bash
-   git clone <URL-del-repo>
-   git checkout develop
-   git pull
-   ```
+---
 
-2. Create your temporary branch from `develop`:
-   ```bash
-   git checkout -b feature/new-feature
-   ```
+## 🧠 Descripción General
 
-3. Do your work and make commits following the **Conventional Commits** format.
+Este proyecto implementa la **API backend** del juego "¿Quién es ese Monstruo?".  
+El objetivo es ofrecer una experiencia divertida y rápida, donde el usuario adivina la identidad de un monstruo a partir de su silueta.
 
-4. Push your branch:
-   ```bash
-   git push origin feature/new-feature
-   ```
+La aplicación sigue una arquitectura REST utilizando **Spring Boot 3.5** y **Java 21**.  
+El sistema expone endpoints para:
 
-5. Open a **Pull Request** → `develop`
-   - The `PR` must have a clear description of the new functionality.
-   - Don't do a push to `develop` or `main` directly.
+- Obtener una trivia aleatoria con 4 opciones.
+- Validar si la respuesta del usuario es correcta.
+- Precargar la base de datos con monstruos mediante un *seed script*.
 
-6. Wait for the leader's review and approval before merging.
+---
 
-7. When `develop` is stable, a `release/*` branch will be created then, merged to `main`.
+## 🧩 Tecnologías Utilizadas
 
+| Tecnología | Descripción |
+|-------------|-------------|
+| **Java 21** | Lenguaje base del proyecto |
+| **Spring Boot 3.5** | Framework principal para la API REST |
+| **Spring Web** | Controladores REST |
+| **Spring Data JPA** | Persistencia de datos con PostgreSQL |
+| **PostgreSQL** | Base de datos relacional |
+| **Lombok** | Reducción de código boilerplate (Getters, Setters, etc.) |
+| **MapStruct** | Mapeo entre entidades y DTOs |
+| **Swagger UI (Springdoc)** | Documentación interactiva de la API |
+| **SLF4J + Logback** | Sistema de logs |
 
-## 🏷️ Naming Conventions
+---
 
-Use short, clear and lowercase names:
+## 🧱 Arquitectura del Proyecto
 
-- `feature/login-api`
-- `feature/create-event`
-- `fix/validation-error`
-- `hotfix/bug-deploy`
-
-
-## ✍️ Conventional Commits
-
-Format:
-```
-<type>: <short description>
+```plaintext
+src/
+├── main/
+│   ├── java/com/halloween/monstertrivia/
+│   │   ├── controller/     → Endpoints REST
+│   │   ├── service/        → Lógica de negocio
+│   │   ├── repository/     → Acceso a datos
+│   │   ├── domain/         → Entidades JPA
+│   │   ├── dto/            → Objetos de transferencia
+│   │   └── config/         → Configuración general
+│   └── resources/
+│       ├── application.yml → Configuración de entorno
+│       └── data/seed.sql   → Datos iniciales (monstruos)
 ```
 
-**Most used types:**
-- `feat:` new functionality
-- `fix:` Error fixing
-- `refactor:` code improvement without changing functionality
-- `docs:` changes in documentation
-- `style:` format or style (spaces, commas, etc.)
-- `test:` add or modify tests
+---
 
-**Examples:**
+## 🧩 Diagrama Entidad–Relación
+
+```mermaid
+erDiagram
+    monsters {
+        int id PK
+        string name "varchar(100)" NOT NULL
+        string image_url "varchar(255)" NOT NULL
+        string silhouette_url "varchar(255)" NOT NULL
+    }
+
+    trivias {
+        int id PK
+        int monster_id FK "Id del monstruo para la silueta" NOT NULL
+        timestamp created_at "default: now()"
+    }
+
+    options {
+        int id PK
+        boolean is_correct "true si es la opcion correcta" NOT NULL
+        int monster_id FK NOT NULL
+        int trivia_id FK NOT NULL
+    }
+
+    monsters ||--o{ trivias : "tiene"
+    trivias ||--o{ options : "contiene"
+    monsters ||--o{ options : "asociado a"
+
+```
+
+---
+
+## 🧛 Endpoints Principales
+
+### 🎲 1. Obtener trivia aleatoria
+
+**GET** `/api/trivia`
+
+**Ejemplo de respuesta:**
+```json
+{
+    "id": 3,
+    "imagenSilueta": "https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154182/csxosd6c3cooqhtjfyd2.webp",
+    "opciones": [
+        "Dracula",
+        "Bruja",
+        "Cthulhu",
+        "Diablo"
+    ]
+}
+```
+
+---
+
+### ✅ 2. Validar respuesta
+
+**POST** `/api/validate`
+
+**Body Ejemplo Correcto:**
+```json
+{
+  "id": 3,
+  "respuesta": "Diablo"
+}
+```
+**Respuesta:**
+```json
+{
+    "acierto": true,
+    "mensaje": "¡Correcto! Era Diablo",
+    "imagenReal": "https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154184/ddo0gl9xxk9ul6tzsclq.webp"
+}
+```
+**Body Ejemplo Error:**
+```json
+{
+  "id": 3,
+  "respuesta": "Bruja"
+}
+```
+```json
+{
+    "acierto": false,
+    "mensaje": "Fallaste, era Diablo",
+    "imagenReal": "https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154184/ddo0gl9xxk9ul6tzsclq.webp"
+}
+```
+---
+
+### 🧬 3. Cargar datos iniciales (Seed)
+
+**Script:** `/resources/data/seed.sql`  
+Debe cargar al menos **10 monstruos** con sus respectivas siluetas, nombres y respuestas correctas.
+
+---
+
+## ⚙️ Configuración del Proyecto
+
+### 1️⃣ Clonar repositorio
+
 ```bash
-git commit -m "feat: add endpoint to new user creation"
-git commit -m "fix: mail validation fix"
+git clone https://github.com/tuusuario/monster-trivia-backend.git
+cd monster-trivia-backend
 ```
 
-## 🧠 Good practices
-- Pull frequently from `develop` to avoid conflicts:
-  ```bash
-  git pull origin develop
-  ```
-- Small and descriptive commits.
-- Review and comment other's PRs.
-- Don't work directly in `develop` or `main`.
-- Resolve conversations before merging.
+### 2️⃣ Configurar Base de Datos PostgreSQL
+
+```yaml
+spring:
+  application:
+    name: whos-that-monster
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    defer-datasource-initialization: true
+```
+
+### 3️⃣ Ejecutar el proyecto
+
+```bash
+./mvnw spring-boot:run
+```
+
+### 4️⃣ Acceder a Swagger
+
+```bash
+http://localhost:8080/swagger-ui.html
+```
 
 ---
 
-## 👑 Roles
-- **Backend Leader:** manage merges to `develop` and `main`.
-- **Collaborators:** create branches, make PRs and wait for approval.
+## 📋 Historias de Usuario Implementadas
+
+| ID       | Descripción              | Endpoint             | Estado |
+|----------:|--------------------------|----------------------|--------|
+| **US01**  | Obtener trivia aleatoria | `GET /api/trivia`    | ✅     |
+| **US02**  | Validar respuesta        | `POST /api/validate` | ✅     |
+| **US03**  | Cargar seed de monstruos | Script SQL           | ✅     |
+| **US08**  | Documentación de Backend | README.MD /docs      | ✅     |
+
+## Diagrama de Capas
+```bash
+          ┌───────────────────────────────┐
+          │         FRONTEND              │
+          │ (React / HTML / CSS / JS)     │
+          │-------------------------------│
+          │ - Muestra silueta del monstruo│
+          │ - Presenta 4 opciones         │
+          │ - Valida respuesta visualmente│
+          │ - Botón siguiente pregunta    │
+          └───────────────┬───────────────┘
+                          │
+                          │  Consume API REST
+                          ▼
+          ┌───────────────────────────────┐
+          │          BACKEND              │
+          │       (Spring Boot)           │
+          │-------------------------------│
+          │ - Endpoint GET /api/trivia    │
+          │ - Endpoint POST /api/validate │
+          │ - Lógica de validación        │
+          │ - Acceso a datos (Repository) │
+          └───────────────┬───────────────┘
+                          │
+                          │  Accede a datos
+                          ▼
+           ┌───────────────────────────────┐
+           │        BASE DE DATOS          │
+           │          (PostgreSQL)         │
+           │-------------------------------│
+           │ Tablas:                       │
+           │   • monsters                  │
+           │   • trivias                   │
+           │   • options                   │
+           │-------------------------------│
+           │ monsters: id, name, image_url,│
+           │             silhouette_url    │
+           │ trivias:  id, monster_id,     │
+           │           created_at          │
+           │ options:  id, is_correct,     │
+           │          monster_id, trivia_id│
+           └───────────────────────────────┘
+
+```
 
 ---
+🔹 **Explicación rápida:**
+- El **frontend** muestra las trivias, recibe y envía respuestas.
+- El **backend** maneja la lógica del juego y comunica con la base de datos.
+- La **base de datos** almacena los monstruos y sus datos.  
 
-**💬 Reminder:**
-
-The order, names, and revisions ensure a clean, collaborative, and conflict-free flow.
-If you have any questions, please ask before merging.
