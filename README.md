@@ -54,7 +54,35 @@ src/
 
 ---
 
-## 🧩 Diagrama Entidad–Relación
+## 🧩 Diagrama Entidad–Relación (Conceptual)
+
+```mermaid
+erDiagram
+    MONSTERS {
+        int id
+        string name
+        string image_url
+        string silhouette_url
+    }
+
+    TRIVIAS {
+        int id
+        int monster_id
+        timestamp created_at
+    }
+
+    OPTIONS {
+        int id
+        boolean is_correct
+        int monster_id
+        int trivia_id
+    }
+
+    MONSTERS ||--o{ TRIVIAS : "tiene"
+    TRIVIAS  ||--o{ OPTIONS : "contiene"
+```
+
+## 💾 Diagrama de Base de Datos (Modelo Físico)
 
 ```mermaid
 erDiagram
@@ -83,7 +111,6 @@ erDiagram
     monsters ||--o{ options : "asociado a"
 
 ```
-
 ---
 
 ## 🧛 Endpoints Principales
