@@ -33,3 +33,10 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+logging:
+  level:
+    root: debug
+    org.springframework.web: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    com.group2.whos_that_monster: debug
