@@ -35,7 +35,7 @@ The system exposes endpoints to:
 
 ---
 
-## 🧱 Arquitectura del Proyecto
+## 🧱 Project Architecture
 
 ```plaintext
 src/
@@ -55,7 +55,7 @@ src/
 
 ---
 
-## 🧩 Diagrama Entidad–Relación (Conceptual)
+## 🧩 Entity–Relationship Diagram (Conceptual)
 
 ```mermaid
 erDiagram
@@ -83,7 +83,7 @@ erDiagram
     TRIVIAS  ||--o{ OPTIONS : "contains"
 ```
 
-## 💾 Diagrama de Base de Datos (Modelo Físico)
+## 💾 Database Diagram (Physical Model)
 
 ```mermaid
 erDiagram
@@ -241,7 +241,7 @@ spring:
 ./mvnw spring-boot:run
 ```
 
-### 4️⃣ Acceder a Swagger
+### 4️⃣ Access Swagger
 
 ```bash
 /api/v1/swagger-ui/index.html
@@ -249,7 +249,7 @@ spring:
 
 ---
 
-## 📋 Historias de Usuario Implementadas
+## 📋 Implemented User Stories
 
 | ID       | Description            | Endpoint             | Status |
 | -------- | ---------------------- | -------------------- | ------ |
@@ -258,7 +258,7 @@ spring:
 | **US03** | Load monster seed data | SQL Script           | ✅      |
 | **US08** | Backend documentation  | README.md /docs      | ✅      |
 
-## Diagrama de Capas
+## Layer Diagram
 ```bash
           ┌───────────────────────────────┐
           │         FRONTEND              │
