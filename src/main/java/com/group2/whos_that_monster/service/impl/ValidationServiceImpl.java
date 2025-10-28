@@ -1,5 +1,6 @@
 package com.group2.whos_that_monster.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.group2.whos_that_monster.dto.validation.ValidationResponse;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ValidationServiceImpl implements IvalidationService {
 
     private final TriviaRepository triviaRepository;
@@ -22,26 +24,38 @@ public class ValidationServiceImpl implements IvalidationService {
     @Transactional(readOnly = true)
     @Override
     public ValidationResponse validateAnswer(Long triviaId, Long optionId) {
-        // 1. Buscar trivia
+        log.info("Validating answer for triviaId={} and optionId={}", triviaId, optionId);
+
+        // 1. Find the trivia by ID
         Trivia trivia = triviaRepository.findById(triviaId)
-                .orElseThrow(() -> new IllegalArgumentException("Trivia not found"));
+                .orElseThrow(() -> {
+                    log.warn("Trivia not found for triviaId={}", triviaId);
+                    return new IllegalArgumentException("Trivia not found");
+                });
 
-        // 2. Buscar opción
+        // 2. Find the option by ID
         Option option = optionRepository.findById(optionId)
-                .orElseThrow(() -> new IllegalArgumentException("Option not found"));
+                .orElseThrow(() -> {
+                    log.warn("Option not found for optionId={}", optionId);
+                    return new IllegalArgumentException("Option not found");
+                });
 
-        // 3. Verificar que pertenezca a la trivia
+        // 3. Verify that the option belongs to the trivia
         if (!option.getTrivia().getId().equals(trivia.getId())) {
+            log.warn("OptionId={} does not belong to triviaId={}", optionId, triviaId);
             throw new IllegalArgumentException("Option does not belong to the given trivia");
         }
 
-        // 4. Validar si es correcta
+        // 4. Check if the option is correct
         boolean isCorrect = Boolean.TRUE.equals(option.getIsCorrect());
+        log.debug("Option correctness: {}", isCorrect);
 
-        // 5. Obtener monstruo asociado (imagen completa)
+        // 5. Retrieve associated monster details
         String monsterName = trivia.getMonster().getName();
         String monsterImageURL = trivia.getMonster().getImageURL();
+        log.debug("Associated monster: {} ({})", monsterName, monsterImageURL);
 
+        log.info("Validation completed for triviaId={} and optionId={}", triviaId, optionId);
         return new ValidationResponse(isCorrect, monsterName, monsterImageURL);
     }
 }
