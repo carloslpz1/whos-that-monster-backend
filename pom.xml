@@ -12,6 +12,7 @@
 	<artifactId>whos-that-monster</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>whos-that-monster</name>
+    <packaging>jar</packaging>
 	<description>Backend for Who is that monster app. Devathon X.</description>
 	<url/>
 	<licenses>
