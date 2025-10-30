@@ -1,0 +1,66 @@
+{
+	"info": {
+		"_postman_id": "c10a2fbf-ec1a-4477-9005-4fa7b5139e3e",
+		"name": "whos-that-monster",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36637944"
+	},
+	"item": [
+		{
+			"name": "WhosThatMonster",
+			"item": [
+				{
+					"name": "trivia",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/trivia",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"trivia"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "validation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"triviaId\" : 14,\n    \"optionId\" : 54\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/validation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"validation"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
