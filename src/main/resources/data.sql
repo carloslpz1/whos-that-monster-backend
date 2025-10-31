@@ -5,7 +5,7 @@ INSERT INTO monsters (id, name, image_url, silhouette) VALUES
 (3, 'Diablo', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154184/ddo0gl9xxk9ul6tzsclq.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154182/csxosd6c3cooqhtjfyd2.webp'),
 (4, 'Dracula', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154221/zu5wnkzomhhbflcy6lra.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761154220/a5mkvh41zdsaumwnac29.webp'),
 (5, 'Fantasma', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761158350/dzzpdd1gkkcvpkq0wol6.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761158348/c7tsqwuwtpuuc34km0gd.webp'),
-(6, 'Frankestein', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155742/aa9ebtoz9zco6wejqwei.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155741/stsbaismah123v1sxzc6.webp'),
+(6, 'Frankestein', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761928593/ezgwbd2qr2l7zprhmiry.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155741/stsbaismah123v1sxzc6.webp'),
 (7, 'Gremlin', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155778/l6xceand8sy84hs5p4qo.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155776/w8wfpazgtfhznxecgzcm.webp'),
 (8, 'Hombre Lobo', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155843/aehf8d3pre2nhq0cgcwt.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155842/t6jnh791yaeehgvv86wj.webp'),
 (9, 'Medusa', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155911/liavryzjmswzxucan0du.webp', 'https://res.cloudinary.com/dfofbqqlg/image/upload/v1761155910/vp5nqviqdzfshbn0v2y4.webp'),
